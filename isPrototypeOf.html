@@ -1,0 +1,87 @@
+<script src="/jstinytest-master/tinytest.js"> </script>
+
+<script>
+
+// Create objects to test function operation
+var canine = {
+  bark: function() {
+    console.log('bark');
+  }
+};
+
+var dog = Object.create(canine);
+dog.fetch = function () {
+  console.log('fetch');
+}
+
+var myDog = Object.create(dog);
+var empty = Object.create(null);
+
+function isPrototypeOf(objPrototype, obj) {
+
+  if (arguments.length === 2) {
+    if (Object.getPrototypeOf(obj) === objPrototype) {
+      return true;
+    } 
+    
+    // Proceed up the prototype chain (until the default prototype object is reached), and invoke isPrototypeOf again
+    let nextPrototypeLink = Object.getPrototypeOf(obj);
+
+    if (nextPrototypeLink === null) {
+      return false;
+    } else {
+      return isPrototypeOf(Object.getPrototypeOf(nextInLine), nextInLine);
+    }
+  } else {
+    throw new TypeError("Usage: isPrototypeOf(objPrototype, obj)");
+  }
+};
+
+// Object.create(obj) sets prototype of Object obj 
+// Object.getPrototypeOf(myDog) = dog
+
+tests ({
+  "It should return true if an object exists in another object's prototype chain.": function() {
+    // debugger;
+    var nativeResult = dog.isPrototypeOf(myDog);
+    var testResult = isPrototypeOf(dog, myDog);
+    eq(testResult, true);
+    eq(nativeResult, testResult);
+  },
+
+  "It should return false if an object does not exist in another object's prototype chain.": function() {
+    // debugger;
+    var nativeResult = dog.isPrototypeOf(empty);
+    var testResult = isPrototypeOf(dog, empty);
+    eq(testResult, false);
+    eq(nativeResult, testResult);
+  },
+
+  "It should throw TypeError if arguments.length !== 2.": function() {
+    try {
+      let isTypeError = false;
+      isPrototypeOf(dog);
+    } catch (e) {
+      isTypeError = (e instanceof TypeError);
+    }
+    eq(isTypeError, true);
+  },
+
+  "It should return true if the default object prototype exists on an object's prototype chain.": function() {
+    // debugger;
+    var nativeResult = Object.prototype.isPrototypeOf(myDog);
+    var testResult = isPrototypeOf(Object.prototype, myDog);
+    eq(testResult, true);
+    eq(nativeResult, testResult);
+  },
+
+  "It should work for comparing any number of prototype links.": function() {
+    // debugger;
+    var nativeResult = Object.prototype.isPrototypeOf(myDog);
+    var testResult = isPrototypeOf(Object.prototype, myDog);
+    eq(testResult, true);
+    eq(testResult, nativeResult);
+  }
+})
+
+</script>

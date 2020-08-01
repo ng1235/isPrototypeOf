@@ -30,7 +30,7 @@ function isPrototypeOf(objPrototype, obj) {
     if (nextPrototypeLink === null) {
       return false;
     } else {
-      return isPrototypeOf(Object.getPrototypeOf(nextInLine), nextInLine);
+      return isPrototypeOf(Object.getPrototypeOf(nextPrototypeLink), nextPrototypeLink);
     }
   } else {
     throw new TypeError("Usage: isPrototypeOf(objPrototype, obj)");
